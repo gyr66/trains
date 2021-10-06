@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gyr.trains.mapper.PricesMapper">
+    <insert id="insertPrices" parameterType="string">
+        INSERT INTO ${tableName} VALUES
+        <foreach collection="priceList" item="price" separator=",">
+            (#{price.tran_no}, #{price.from_station_no}, #{price.to_station_no}, #{price.price})
+        </foreach>
+    </insert>
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gyr.trains.mapper.RoutesMapper">
+    <insert id="insertRoutes" parameterType="String">
+        INSERT INTO ${tableName} VALUES
+        <foreach collection="routeList" item="route" separator=",">
+            (#{route.start_station_name}, #{route.end_station_name}, #{route.start_time},
+            #{route.arrive_time},#{route.station_train_code},
+            #{route.from_station_no}, #{route.to_station_no}, #{route.train_no}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getAllRoutes" resultType="com.gyr.trains.crawler.bean.Route">
+        SELECT * FROM routes
+    </select>
+</mapper>
