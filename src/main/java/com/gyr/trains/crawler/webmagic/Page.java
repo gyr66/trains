@@ -3,12 +3,12 @@ package com.gyr.trains.crawler.webmagic;
 import com.gyr.trains.crawler.webmagic.downloader.Downloader;
 import com.gyr.trains.crawler.webmagic.pipeline.Pipeline;
 import com.gyr.trains.crawler.webmagic.processor.PageProcessor;
-import com.gyr.trains.crawler.webmagic.utils.HttpConstant;
-import com.gyr.trains.crawler.webmagic.utils.UrlUtils;
-import org.apache.commons.lang3.StringUtils;
 import com.gyr.trains.crawler.webmagic.selector.Html;
 import com.gyr.trains.crawler.webmagic.selector.Json;
 import com.gyr.trains.crawler.webmagic.selector.Selectable;
+import com.gyr.trains.crawler.webmagic.utils.HttpConstant;
+import com.gyr.trains.crawler.webmagic.utils.UrlUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +44,7 @@ public class Page {
 
     private Selectable url;
 
-    private Map<String,List<String>> headers;
+    private Map<String, List<String>> headers;
 
     private int statusCode = HttpConstant.StatusCode.CODE_200;
 
@@ -55,11 +55,11 @@ public class Page {
     private List<Request> targetRequests = new ArrayList<Request>();
 
     private String charset;
-    
+
     public Page() {
     }
 
-    public static Page fail(){
+    public static Page fail() {
         Page page = new Page();
         page.setDownloadSuccess(false);
         return page;
@@ -74,7 +74,7 @@ public class Page {
     /**
      * store extract results
      *
-     * @param key key
+     * @param key   key
      * @param field field
      */
     public void putField(String key, Object field) {
@@ -94,6 +94,15 @@ public class Page {
     }
 
     /**
+     * @param html html
+     * @deprecated since 0.4.0
+     * The html is parse just when first time of calling {@link #getHtml()}, so use {@link #setRawText(String)} instead.
+     */
+    public void setHtml(Html html) {
+        this.html = html;
+    }
+
+    /**
      * get json content of page
      *
      * @return json
@@ -104,15 +113,6 @@ public class Page {
             json = new Json(rawText);
         }
         return json;
-    }
-
-    /**
-     * @param html html
-     * @deprecated since 0.4.0
-     * The html is parse just when first time of calling {@link #getHtml()}, so use {@link #setRawText(String)} instead.
-     */
-    public void setHtml(Html html) {
-        this.html = html;
     }
 
     public List<Request> getTargetRequests() {

@@ -27,20 +27,9 @@ public class RegexSelector implements Selector {
         this.group = group;
     }
 
-    private void compileRegex(String regexStr) {
-        if (StringUtils.isBlank(regexStr)) {
-            throw new IllegalArgumentException("regex must not be empty");
-        }
-        try {
-            this.regex = Pattern.compile(regexStr, Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-            this.regexStr = regexStr;
-        } catch (PatternSyntaxException e) {
-            throw new IllegalArgumentException("invalid regex "+regexStr, e);
-        }
-    }
-
     /**
      * Create a RegexSelector. When there is no capture group, the value is set to 0 else set to 1.
+     *
      * @param regexStr the regular expression.
      */
     public RegexSelector(String regexStr) {
@@ -49,6 +38,18 @@ public class RegexSelector implements Selector {
             this.group = 0;
         } else {
             this.group = 1;
+        }
+    }
+
+    private void compileRegex(String regexStr) {
+        if (StringUtils.isBlank(regexStr)) {
+            throw new IllegalArgumentException("regex must not be empty");
+        }
+        try {
+            this.regex = Pattern.compile(regexStr, Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+            this.regexStr = regexStr;
+        } catch (PatternSyntaxException e) {
+            throw new IllegalArgumentException("invalid regex " + regexStr, e);
         }
     }
 

@@ -1,14 +1,9 @@
 package com.gyr.trains.crawler.webmagic;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
 import com.gyr.trains.crawler.webmagic.processor.PageProcessor;
 import com.gyr.trains.crawler.webmagic.utils.HttpConstant;
+
+import java.util.*;
 
 /**
  * Object contains setting for crawler.<br>
@@ -19,39 +14,26 @@ import com.gyr.trains.crawler.webmagic.utils.HttpConstant;
  */
 public class Site {
 
-    private String domain;
-
-    private String userAgent;
-
-    private Map<String, String> defaultCookies = new LinkedHashMap<String, String>();
-
-    private Map<String, Map<String, String>> cookies = new HashMap<String, Map<String, String>>();
-
-    private String charset;
-
-    private int sleepTime = 5000;
-
-    private int retryTimes = 0;
-
-    private int cycleRetryTimes = 0;
-
-    private int retrySleepTime = 1000;
-
-    private int timeOut = 5000;
-
     private static final Set<Integer> DEFAULT_STATUS_CODE_SET = new HashSet<Integer>();
-
-    private Set<Integer> acceptStatCode = DEFAULT_STATUS_CODE_SET;
-
-    private Map<String, String> headers = new HashMap<String, String>();
-
-    private boolean useGzip = true;
-
-    private boolean disableCookieManagement = false;
 
     static {
         DEFAULT_STATUS_CODE_SET.add(HttpConstant.StatusCode.CODE_200);
     }
+
+    private String domain;
+    private String userAgent;
+    private Map<String, String> defaultCookies = new LinkedHashMap<String, String>();
+    private Map<String, Map<String, String>> cookies = new HashMap<String, Map<String, String>>();
+    private String charset;
+    private int sleepTime = 5000;
+    private int retryTimes = 0;
+    private int cycleRetryTimes = 0;
+    private int retrySleepTime = 1000;
+    private int timeOut = 5000;
+    private Set<Integer> acceptStatCode = DEFAULT_STATUS_CODE_SET;
+    private Map<String, String> headers = new HashMap<String, String>();
+    private boolean useGzip = true;
+    private boolean disableCookieManagement = false;
 
     /**
      * new a Site
@@ -65,7 +47,7 @@ public class Site {
     /**
      * Add a cookie with domain {@link #getDomain()}
      *
-     * @param name name
+     * @param name  name
      * @param value value
      * @return this
      */
@@ -78,26 +60,15 @@ public class Site {
      * Add a cookie with specific domain.
      *
      * @param domain domain
-     * @param name name
-     * @param value value
+     * @param name   name
+     * @param value  value
      * @return this
      */
     public Site addCookie(String domain, String name, String value) {
-        if (!cookies.containsKey(domain)){
-            cookies.put(domain,new HashMap<String, String>());
+        if (!cookies.containsKey(domain)) {
+            cookies.put(domain, new HashMap<String, String>());
         }
         cookies.get(domain).put(name, value);
-        return this;
-    }
-
-    /**
-     * set user agent
-     *
-     * @param userAgent userAgent
-     * @return this
-     */
-    public Site setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
         return this;
     }
 
@@ -115,7 +86,7 @@ public class Site {
      *
      * @return get cookies
      */
-    public Map<String,Map<String, String>> getAllCookies() {
+    public Map<String, Map<String, String>> getAllCookies() {
         return cookies;
     }
 
@@ -126,6 +97,17 @@ public class Site {
      */
     public String getUserAgent() {
         return userAgent;
+    }
+
+    /**
+     * set user agent
+     *
+     * @param userAgent userAgent
+     * @return this
+     */
+    public Site setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+        return this;
     }
 
     /**
@@ -149,6 +131,15 @@ public class Site {
     }
 
     /**
+     * get charset set manually
+     *
+     * @return charset
+     */
+    public String getCharset() {
+        return charset;
+    }
+
+    /**
      * Set charset of page manually.<br>
      * When charset is not set or set to null, it can be auto detected by Http header.
      *
@@ -158,15 +149,6 @@ public class Site {
     public Site setCharset(String charset) {
         this.charset = charset;
         return this;
-    }
-
-    /**
-     * get charset set manually
-     *
-     * @return charset
-     */
-    public String getCharset() {
-        return charset;
     }
 
     public int getTimeOut() {
@@ -185,6 +167,15 @@ public class Site {
     }
 
     /**
+     * get acceptStatCode
+     *
+     * @return acceptStatCode
+     */
+    public Set<Integer> getAcceptStatCode() {
+        return acceptStatCode;
+    }
+
+    /**
      * Set acceptStatCode.<br>
      * When status code of http response is in acceptStatCodes, it will be processed.<br>
      * {200} by default.<br>
@@ -199,12 +190,13 @@ public class Site {
     }
 
     /**
-     * get acceptStatCode
+     * Get the interval between the processing of two pages.<br>
+     * Time unit is milliseconds.<br>
      *
-     * @return acceptStatCode
+     * @return the interval between the processing of two pages,
      */
-    public Set<Integer> getAcceptStatCode() {
-        return acceptStatCode;
+    public int getSleepTime() {
+        return sleepTime;
     }
 
     /**
@@ -220,22 +212,23 @@ public class Site {
     }
 
     /**
-     * Get the interval between the processing of two pages.<br>
-     * Time unit is milliseconds.<br>
-     *
-     * @return the interval between the processing of two pages,
-     */
-    public int getSleepTime() {
-        return sleepTime;
-    }
-
-    /**
      * Get retry times immediately when download fail, 0 by default.<br>
      *
      * @return retry times when download fail
      */
     public int getRetryTimes() {
         return retryTimes;
+    }
+
+    /**
+     * Set retry times when download fail, 0 by default.<br>
+     *
+     * @param retryTimes retryTimes
+     * @return this
+     */
+    public Site setRetryTimes(int retryTimes) {
+        this.retryTimes = retryTimes;
+        return this;
     }
 
     public Map<String, String> getHeaders() {
@@ -252,17 +245,6 @@ public class Site {
      */
     public Site addHeader(String key, String value) {
         headers.put(key, value);
-        return this;
-    }
-
-    /**
-     * Set retry times when download fail, 0 by default.<br>
-     *
-     * @param retryTimes retryTimes
-     * @return this
-     */
-    public Site setRetryTimes(int retryTimes) {
-        this.retryTimes = retryTimes;
         return this;
     }
 
@@ -290,6 +272,18 @@ public class Site {
         return useGzip;
     }
 
+    /**
+     * Whether use gzip. <br>
+     * Default is true, you can set it to false to disable gzip.
+     *
+     * @param useGzip useGzip
+     * @return this
+     */
+    public Site setUseGzip(boolean useGzip) {
+        this.useGzip = useGzip;
+        return this;
+    }
+
     public int getRetrySleepTime() {
         return retrySleepTime;
     }
@@ -305,18 +299,6 @@ public class Site {
         return this;
     }
 
-    /**
-     * Whether use gzip. <br>
-     * Default is true, you can set it to false to disable gzip.
-     *
-     * @param useGzip useGzip
-     * @return this
-     */
-    public Site setUseGzip(boolean useGzip) {
-        this.useGzip = useGzip;
-        return this;
-    }
-
     public boolean isDisableCookieManagement() {
         return disableCookieManagement;
     }
@@ -325,6 +307,7 @@ public class Site {
      * Downloader is supposed to store response cookie.
      * Disable it to ignore all cookie fields and stay clean.
      * Warning: Set cookie will still NOT work if disableCookieManagement is true.
+     *
      * @param disableCookieManagement disableCookieManagement
      * @return this
      */

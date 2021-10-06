@@ -1,7 +1,7 @@
 package com.gyr.trains.crawler.webmagic.processor;
 
-import com.gyr.trains.crawler.webmagic.Site;
 import com.gyr.trains.crawler.webmagic.Page;
+import com.gyr.trains.crawler.webmagic.Site;
 
 /**
  * Interface to be implemented to customize a crawler.<br>

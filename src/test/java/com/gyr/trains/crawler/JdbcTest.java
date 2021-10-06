@@ -18,6 +18,8 @@ public class JdbcTest {
                 "  `name` varchar(255) NULL,\n" +
                 "  PRIMARY KEY (`id`)\n" +
                 ");");
-    };
+    }
+
+    ;
 
 }

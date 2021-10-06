@@ -1,10 +1,12 @@
 package com.gyr.trains.crawler.webmagic.downloader;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.gyr.trains.crawler.webmagic.Page;
+import com.gyr.trains.crawler.webmagic.Request;
+import com.gyr.trains.crawler.webmagic.Site;
+import com.gyr.trains.crawler.webmagic.Task;
+import com.gyr.trains.crawler.webmagic.proxy.Proxy;
+import com.gyr.trains.crawler.webmagic.proxy.ProxyProvider;
+import com.gyr.trains.crawler.webmagic.selector.PlainText;
 import com.gyr.trains.crawler.webmagic.utils.CharsetUtils;
 import com.gyr.trains.crawler.webmagic.utils.HttpClientUtils;
 import org.apache.commons.io.IOUtils;
@@ -14,16 +16,12 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.gyr.trains.crawler.webmagic.Page;
-import com.gyr.trains.crawler.webmagic.Request;
-import com.gyr.trains.crawler.webmagic.Site;
-import com.gyr.trains.crawler.webmagic.Task;
-import com.gyr.trains.crawler.webmagic.proxy.Proxy;
-import com.gyr.trains.crawler.webmagic.proxy.ProxyProvider;
-import com.gyr.trains.crawler.webmagic.selector.PlainText;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The http downloader based on HttpClient.
@@ -34,10 +32,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class HttpClientDownloader extends AbstractDownloader {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
-
     private final Map<String, CloseableHttpClient> httpClients = new HashMap<String, CloseableHttpClient>();
-
+    private Logger logger = LoggerFactory.getLogger(getClass());
     private HttpClientGenerator httpClientGenerator = new HttpClientGenerator();
 
     private HttpUriRequestConverter httpUriRequestConverter = new HttpUriRequestConverter();
@@ -113,7 +109,7 @@ public class HttpClientDownloader extends AbstractDownloader {
         String contentType = httpResponse.getEntity().getContentType() == null ? "" : httpResponse.getEntity().getContentType().getValue();
         Page page = new Page();
         page.setBytes(bytes);
-        if (!request.isBinaryContent()){
+        if (!request.isBinaryContent()) {
             if (charset == null) {
                 charset = getHtmlCharset(contentType, bytes);
             }

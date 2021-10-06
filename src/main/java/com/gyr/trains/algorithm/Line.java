@@ -28,9 +28,9 @@ public class Line {
         return "Line{" +
                 "startStation=" + startStation +
                 ", endStation=" + endStation +
-                ", startTime=" + sf.format(startTime)+
-                ", endTime=" +  sf.format(endTime) +
-                ", seatType='" +seatType + '\'' +
+                ", startTime=" + sf.format(startTime) +
+                ", endTime=" + sf.format(endTime) +
+                ", seatType='" + seatType + '\'' +
                 ", price=" + price +
                 ", id='" + id + '\'' +
                 '}';

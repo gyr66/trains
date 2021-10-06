@@ -9,7 +9,6 @@ import com.gyr.trains.crawler.TrainRoutesCrawler;
 import com.gyr.trains.crawler.TrainsCrawler;
 import com.gyr.trains.crawler.bean.Price;
 import com.gyr.trains.crawler.bean.Route;
-import com.gyr.trains.crawler.bean.Train;
 import com.gyr.trains.crawler.webmagic.downloader.HttpClientDownloader;
 import com.gyr.trains.crawler.webmagic.proxy.Proxy;
 import com.gyr.trains.crawler.webmagic.proxy.SimpleProxyProvider;

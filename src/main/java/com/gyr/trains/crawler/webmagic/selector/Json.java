@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * parse json
+ *
  * @author code4crafter@gmail.com
  * @since 0.5.0
  */
@@ -22,6 +23,7 @@ public class Json extends PlainText {
 
     /**
      * remove padding for JSONP
+     *
      * @param padding padding
      * @return json after padding removed
      */
@@ -52,6 +54,6 @@ public class Json extends PlainText {
     @Override
     public Selectable jsonPath(String jsonPath) {
         JsonPathSelector jsonPathSelector = new JsonPathSelector(jsonPath);
-        return selectList(jsonPathSelector,getSourceTexts());
+        return selectList(jsonPathSelector, getSourceTexts());
     }
 }

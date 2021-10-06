@@ -13,8 +13,8 @@ import java.nio.charset.Charset;
 
 /**
  * @author code4crafter@gmail.com
- *         Date: 17/3/11
- *         Time: 10:36
+ * Date: 17/3/11
+ * Time: 10:36
  * @since 0.6.2
  */
 public abstract class CharsetUtils {
@@ -57,5 +57,5 @@ public abstract class CharsetUtils {
         // 3、todo use tools as cpdetector for content decode
         return charset;
     }
-    
+
 }

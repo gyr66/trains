@@ -1,10 +1,10 @@
 package com.gyr.trains.crawler;
 
-import com.gyr.trains.crawler.bean.Result;
 import com.gyr.trains.algorithm.Graph;
 import com.gyr.trains.algorithm.Line;
 import com.gyr.trains.algorithm.Station;
 import com.gyr.trains.algorithm.Traveler;
+import com.gyr.trains.crawler.bean.Result;
 import com.gyr.trains.mapper.ResultsMapper;
 import com.gyr.trains.mapper.StationsMapper;
 import org.junit.jupiter.api.Test;

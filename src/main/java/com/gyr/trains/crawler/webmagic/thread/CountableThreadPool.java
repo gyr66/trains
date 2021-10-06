@@ -25,6 +25,7 @@ public class CountableThreadPool {
     private ReentrantLock reentrantLock = new ReentrantLock();
 
     private Condition condition = reentrantLock.newCondition();
+    private ExecutorService executorService;
 
     public CountableThreadPool(int threadNum) {
         this.threadNum = threadNum;
@@ -47,8 +48,6 @@ public class CountableThreadPool {
     public int getThreadNum() {
         return threadNum;
     }
-
-    private ExecutorService executorService;
 
     public void execute(final Runnable runnable) {
 

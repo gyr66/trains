@@ -3,7 +3,8 @@
 
 <mapper namespace="com.gyr.trains.mapper.ResultsMapper">
     <select id="getAllResults" resultType="com.gyr.trains.crawler.bean.Result" parameterType="String">
-        SELECT * FROM ${tableName}
+        SELECT *
+        FROM ${tableName}
     </select>
 
 

@@ -34,7 +34,7 @@ public class XpathSelector extends BaseElementSelector {
     @Override
     public Element selectElement(Element element) {
         List<Element> elements = selectElements(element);
-        if (CollectionUtils.isNotEmpty(elements)){
+        if (CollectionUtils.isNotEmpty(elements)) {
             return elements.get(0);
         }
         return null;

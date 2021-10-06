@@ -20,12 +20,15 @@ import java.util.regex.Pattern;
  */
 public class UrlUtils {
 
+    private static final Pattern patternForCharset = Pattern.compile("charset\\s*=\\s*['\"]*([^\\s;'\"]*)", Pattern.CASE_INSENSITIVE);
+    private static Pattern patternForProtocal = Pattern.compile("[\\w]+://");
+
     /**
      * canonicalizeUrl
      * <br>
      * Borrowed from Jsoup.
      *
-     * @param url url
+     * @param url   url
      * @param refer refer
      * @return canonicalizeUrl
      */
@@ -50,7 +53,6 @@ public class UrlUtils {
     }
 
     /**
-     *
      * @param url url
      * @return new url
      * @deprecated
@@ -73,8 +75,6 @@ public class UrlUtils {
         return host;
     }
 
-    private static Pattern patternForProtocal = Pattern.compile("[\\w]+://");
-
     public static String removeProtocol(String url) {
         return patternForProtocal.matcher(url).replaceAll("");
     }
@@ -92,7 +92,7 @@ public class UrlUtils {
         int portIndex = domain.indexOf(":");
         if (portIndex != -1) {
             return domain.substring(0, portIndex);
-        }else {
+        } else {
             return domain;
         }
     }
@@ -112,8 +112,6 @@ public class UrlUtils {
         }
         return urlList;
     }
-
-    private static final Pattern patternForCharset = Pattern.compile("charset\\s*=\\s*['\"]*([^\\s;'\"]*)", Pattern.CASE_INSENSITIVE);
 
     public static String getCharset(String contentType) {
         Matcher matcher = patternForCharset.matcher(contentType);

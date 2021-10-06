@@ -30,6 +30,28 @@ public class TrainsCrawler {
     @Autowired
     HttpClientDownloader httpClientDownloader;
 
+    public static List<Train> dealResultItem(ResultItems resultItem, Logger logger) {
+        List<Train> trainList = new ArrayList<>();
+        String content = resultItem.get("content");
+        try {
+            JSONObject jsonObject = JSON.parseObject(content);
+            JSONArray data = jsonObject.getJSONArray("data");
+            if (data.isEmpty()) return null;
+            for (Object item : data) {
+                JSONObject train = (JSONObject) item;
+                String train_no = train.getString("train_no");
+                if (!set.contains(train_no)) {
+                    set.add(train_no);
+                    Train pojo = train.toJavaObject(Train.class);
+                    trainList.add(pojo);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("爬取到错误页面: " + content);
+        }
+        return trainList;
+    }
+
     public List<Train> start() {
         set.clear(); // 每次启动前先清空set
         SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
@@ -55,28 +77,6 @@ public class TrainsCrawler {
             if (trainList != null) trains.addAll(trainList);
         }
         return trains;
-    }
-
-    public static List<Train> dealResultItem(ResultItems resultItem, Logger logger) {
-        List<Train> trainList = new ArrayList<>();
-        String content = resultItem.get("content");
-        try {
-            JSONObject jsonObject = JSON.parseObject(content);
-            JSONArray data = jsonObject.getJSONArray("data");
-            if (data.isEmpty()) return null;
-            for (Object item : data) {
-                JSONObject train = (JSONObject) item;
-                String train_no = train.getString("train_no");
-                if (!set.contains(train_no)) {
-                    set.add(train_no);
-                    Train pojo = train.toJavaObject(Train.class);
-                    trainList.add(pojo);
-                }
-            }
-        } catch (Exception e) {
-            logger.error("爬取到错误页面: " + content);
-        }
-        return trainList;
     }
 }
 

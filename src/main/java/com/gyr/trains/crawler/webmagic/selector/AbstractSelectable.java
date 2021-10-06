@@ -86,7 +86,7 @@ public abstract class AbstractSelectable implements Selectable {
 
     @Override
     public Selectable replace(String regex, String replacement) {
-        ReplaceSelector replaceSelector = new ReplaceSelector(regex,replacement);
+        ReplaceSelector replaceSelector = new ReplaceSelector(regex, replacement);
         return select(replaceSelector, getSourceTexts());
     }
 

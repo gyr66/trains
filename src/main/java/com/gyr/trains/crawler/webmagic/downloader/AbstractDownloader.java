@@ -26,7 +26,7 @@ public abstract class AbstractDownloader implements Downloader {
     /**
      * A simple method to download a url.
      *
-     * @param url url
+     * @param url     url
      * @param charset charset
      * @return html
      */

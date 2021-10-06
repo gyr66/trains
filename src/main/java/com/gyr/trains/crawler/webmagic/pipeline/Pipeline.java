@@ -8,9 +8,9 @@ import com.gyr.trains.crawler.webmagic.Task;
  * The interface Pipeline can be implemented to customize ways of persistent.
  *
  * @author code4crafter@gmail.com <br>
- * @since 0.1.0
  * @see ConsolePipeline
  * @see FilePipeline
+ * @since 0.1.0
  */
 public interface Pipeline {
 
@@ -18,7 +18,7 @@ public interface Pipeline {
      * Process extracted results.
      *
      * @param resultItems resultItems
-     * @param task task
+     * @param task        task
      */
     public void process(ResultItems resultItems, Task task);
 }

@@ -19,6 +19,7 @@ public class RoutesCrawlerTest {
     TrainsMapper trainsMapper;
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+
     @Test
     void crawlerTest() {
 

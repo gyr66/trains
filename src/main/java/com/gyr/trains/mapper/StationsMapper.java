@@ -8,5 +8,6 @@ import java.util.List;
 @Mapper
 public interface StationsMapper {
     List<Station> getAllStations();
+
     Station getStationByName(String name);
 }

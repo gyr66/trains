@@ -1,10 +1,10 @@
 package com.gyr.trains.crawler.webmagic;
 
 import com.gyr.trains.crawler.webmagic.downloader.Downloader;
+import com.gyr.trains.crawler.webmagic.model.HttpRequestBody;
 import com.gyr.trains.crawler.webmagic.scheduler.PriorityScheduler;
 import com.gyr.trains.crawler.webmagic.utils.Experimental;
 import com.gyr.trains.crawler.webmagic.utils.HttpConstant;
-import com.gyr.trains.crawler.webmagic.model.HttpRequestBody;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -19,10 +19,8 @@ import java.util.Map;
  */
 public class Request implements Serializable {
 
-    private static final long serialVersionUID = 2062192774891352043L;
-
     public static final String CYCLE_TRIED_TIMES = "_cycle_tried_times";
-
+    private static final long serialVersionUID = 2062192774891352043L;
     private String url;
 
     private String method;
@@ -49,13 +47,13 @@ public class Request implements Serializable {
     /**
      * Priority of the request.<br>
      * The bigger will be processed earlier. <br>
+     *
      * @see PriorityScheduler
      */
     private long priority;
 
     /**
      * When it is set to TRUE, the downloader will not try to parse response body to text.
-     *
      */
     private boolean binaryContent = false;
 
@@ -75,10 +73,10 @@ public class Request implements Serializable {
     /**
      * Set the priority of request for sorting.<br>
      * Need a scheduler supporting priority.<br>
-     * @see PriorityScheduler
      *
      * @param priority priority
      * @return this
+     * @see PriorityScheduler
      */
     @Experimental
     public Request setPriority(long priority) {
@@ -106,6 +104,11 @@ public class Request implements Serializable {
         return url;
     }
 
+    public Request setUrl(String url) {
+        this.url = url;
+        return this;
+    }
+
     public Map<String, Object> getExtras() {
         return extras;
     }
@@ -115,13 +118,9 @@ public class Request implements Serializable {
         return this;
     }
 
-    public Request setUrl(String url) {
-        this.url = url;
-        return this;
-    }
-
     /**
      * The http method of the request. Get for default.
+     *
      * @return httpMethod
      * @see HttpConstant.Method
      * @since 0.5.0
@@ -183,17 +182,17 @@ public class Request implements Serializable {
         return binaryContent;
     }
 
+    public Request setBinaryContent(boolean binaryContent) {
+        this.binaryContent = binaryContent;
+        return this;
+    }
+
     public Downloader getDownloader() {
         return downloader;
     }
 
     public void setDownloader(Downloader downloader) {
         this.downloader = downloader;
-    }
-
-    public Request setBinaryContent(boolean binaryContent) {
-        this.binaryContent = binaryContent;
-        return this;
     }
 
     public String getCharset() {
@@ -213,7 +212,7 @@ public class Request implements Serializable {
                 ", extras=" + extras +
                 ", priority=" + priority +
                 ", headers=" + headers +
-                ", cookies="+ cookies+
+                ", cookies=" + cookies +
                 '}';
     }
 

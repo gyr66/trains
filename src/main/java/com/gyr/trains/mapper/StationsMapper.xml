@@ -3,11 +3,14 @@
 
 <mapper namespace="com.gyr.trains.mapper.StationsMapper">
     <select id="getAllStations" resultType="com.gyr.trains.algorithm.Station">
-        SELECT * FROM stations
+        SELECT *
+        FROM stations
     </select>
 
     <select id="getStationByName" resultType="com.gyr.trains.algorithm.Station" parameterType="String">
-        SELECT * FROM  stations WHERE name = #{name}
+        SELECT *
+        FROM stations
+        WHERE name = #{name}
     </select>
 
 </mapper>

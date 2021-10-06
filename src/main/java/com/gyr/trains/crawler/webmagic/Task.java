@@ -7,9 +7,9 @@ import com.gyr.trains.crawler.webmagic.scheduler.Scheduler;
  * Interface for identifying different tasks.<br>
  *
  * @author code4crafter@gmail.com <br>
- * @since 0.1.0
  * @see Scheduler
  * @see Pipeline
+ * @since 0.1.0
  */
 public interface Task {
 

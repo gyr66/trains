@@ -1,8 +1,8 @@
 package com.gyr.trains.crawler.webmagic.scheduler;
 
 import com.gyr.trains.crawler.webmagic.Request;
-import com.gyr.trains.crawler.webmagic.utils.NumberUtils;
 import com.gyr.trains.crawler.webmagic.Task;
+import com.gyr.trains.crawler.webmagic.utils.NumberUtils;
 
 import java.util.Comparator;
 import java.util.concurrent.BlockingQueue;

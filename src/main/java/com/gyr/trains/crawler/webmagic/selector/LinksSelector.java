@@ -1,11 +1,11 @@
 package com.gyr.trains.crawler.webmagic.selector;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Links selector based on jsoup. Use absolute url. <br>

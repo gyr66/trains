@@ -1,12 +1,12 @@
 package com.gyr.trains.crawler.webmagic.scheduler;
 
 import com.gyr.trains.crawler.webmagic.Request;
-import com.gyr.trains.crawler.webmagic.utils.HttpConstant;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.gyr.trains.crawler.webmagic.Task;
 import com.gyr.trains.crawler.webmagic.scheduler.component.DuplicateRemover;
 import com.gyr.trains.crawler.webmagic.scheduler.component.HashSetDuplicateRemover;
+import com.gyr.trains.crawler.webmagic.utils.HttpConstant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Remove duplicate urls and only push urls which are not duplicate.<br><br>

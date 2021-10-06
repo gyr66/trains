@@ -2,6 +2,7 @@ package com.gyr.trains.crawler.webmagic.utils;
 
 /**
  * Some constants of Http protocal.
+ *
  * @author code4crafer@gmail.com
  * @since 0.5.0
  */

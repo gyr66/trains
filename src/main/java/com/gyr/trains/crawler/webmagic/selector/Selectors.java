@@ -13,7 +13,7 @@ public abstract class Selectors {
     }
 
     public static RegexSelector regex(String expr, int group) {
-        return new RegexSelector(expr,group);
+        return new RegexSelector(expr, group);
     }
 
     public static SmartContentSelector smartContent() {
@@ -33,9 +33,9 @@ public abstract class Selectors {
     }
 
     /**
-     * @see #xpath(String)
      * @param expr expr
      * @return new selector
+     * @see #xpath(String)
      */
     @Deprecated
     public static XpathSelector xsoup(String expr) {

@@ -18,17 +18,6 @@ public class BaiduBaikePageProcessor implements PageProcessor {
     private Site site = Site.me()//.setHttpProxy(new HttpHost("127.0.0.1",8888))
             .setRetryTimes(3).setSleepTime(1000).setUseGzip(true);
 
-    @Override
-    public void process(Page page) {
-        page.putField("name", page.getHtml().css("dl.lemmaWgt-lemmaTitle h1","text").toString());
-        page.putField("description", page.getHtml().xpath("//div[@class='lemma-summary']/allText()"));
-    }
-
-    @Override
-    public Site getSite() {
-        return site;
-    }
-
     public static void main(String[] args) {
         //single download
         Spider spider = Spider.create(new BaiduBaikePageProcessor()).thread(2);
@@ -38,14 +27,25 @@ public class BaiduBaikePageProcessor implements PageProcessor {
 
         //multidownload
         List<String> list = new ArrayList<String>();
-        list.add(String.format(urlTemplate,"风力发电"));
-        list.add(String.format(urlTemplate,"太阳能"));
-        list.add(String.format(urlTemplate,"地热发电"));
-        list.add(String.format(urlTemplate,"地热发电"));
+        list.add(String.format(urlTemplate, "风力发电"));
+        list.add(String.format(urlTemplate, "太阳能"));
+        list.add(String.format(urlTemplate, "地热发电"));
+        list.add(String.format(urlTemplate, "地热发电"));
         List<ResultItems> resultItemses = spider.<ResultItems>getAll(list);
         for (ResultItems resultItemse : resultItemses) {
             System.out.println(resultItemse.getAll());
         }
         spider.close();
+    }
+
+    @Override
+    public void process(Page page) {
+        page.putField("name", page.getHtml().css("dl.lemmaWgt-lemmaTitle h1", "text").toString());
+        page.putField("description", page.getHtml().xpath("//div[@class='lemma-summary']/allText()"));
+    }
+
+    @Override
+    public Site getSite() {
+        return site;
     }
 }

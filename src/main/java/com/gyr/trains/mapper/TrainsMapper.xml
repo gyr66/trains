@@ -4,13 +4,15 @@
 <mapper namespace="com.gyr.trains.mapper.TrainsMapper">
     <insert id="insertTrains" parameterType="String">
         INSERT INTO ${tableName} VALUES
-        <foreach collection ="trainList" item="train" separator =",">
-            (#{train.from_station}, #{train.to_station}, #{train.station_train_code}, #{train.train_no}, #{train.date}, #{train.total_num})
-        </foreach >
+        <foreach collection="trainList" item="train" separator=",">
+            (#{train.from_station}, #{train.to_station}, #{train.station_train_code}, #{train.train_no}, #{train.date},
+            #{train.total_num})
+        </foreach>
     </insert>
 
     <select id="getAllTrain_nos" resultType="String" parameterType="String">
-        SELECT train_no FROM ${tableName}
+        SELECT train_no
+        FROM ${tableName}
     </select>
 
 </mapper>

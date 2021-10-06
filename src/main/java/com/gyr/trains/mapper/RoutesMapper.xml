@@ -13,6 +13,7 @@
     </insert>
 
     <select id="getAllRoutes" resultType="com.gyr.trains.crawler.bean.Route">
-        SELECT * FROM routes
+        SELECT *
+        FROM routes
     </select>
 </mapper>

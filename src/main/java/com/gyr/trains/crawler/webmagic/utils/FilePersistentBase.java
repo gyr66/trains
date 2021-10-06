@@ -10,8 +10,6 @@ import java.io.File;
  */
 public class FilePersistentBase {
 
-    protected String path;
-
     public static String PATH_SEPERATOR = "/";
 
     static {
@@ -21,12 +19,7 @@ public class FilePersistentBase {
         }
     }
 
-    public void setPath(String path) {
-        if (!path.endsWith(PATH_SEPERATOR)) {
-            path += PATH_SEPERATOR;
-        }
-        this.path = path;
-    }
+    protected String path;
 
     public File getFile(String fullName) {
         checkAndMakeParentDirecotry(fullName);
@@ -46,5 +39,12 @@ public class FilePersistentBase {
 
     public String getPath() {
         return path;
+    }
+
+    public void setPath(String path) {
+        if (!path.endsWith(PATH_SEPERATOR)) {
+            path += PATH_SEPERATOR;
+        }
+        this.path = path;
     }
 }

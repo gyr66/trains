@@ -18,7 +18,7 @@ public interface Scheduler {
      * add a url to fetch
      *
      * @param request request
-     * @param task task
+     * @param task    task
      */
     public void push(Request request, Task task);
 

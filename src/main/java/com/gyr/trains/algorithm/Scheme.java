@@ -12,26 +12,12 @@ public class Scheme {
     Date arrivalTime = sf.parse("00:00");
     int transferTimes;
 
-    public Stack<Line> getRoute() {
-        return route;
-    }
-
-    public double getCost() {
-        return cost;
-    }
-
-    public Date getArrivalTime() {
-        return arrivalTime;
-    }
-
-    public int getTransferTimes() {
-        return transferTimes;
-    }
-
     public Scheme(Stack<Line> path) throws ParseException {
         for (Line line : path) {
-            if (route.empty() || !route.peek().id.equals(line.id) || !route.peek().seatType.equals(line.seatType)) { route.push(line); transferTimes++; }
-            else {
+            if (route.empty() || !route.peek().id.equals(line.id) || !route.peek().seatType.equals(line.seatType)) {
+                route.push(line);
+                transferTimes++;
+            } else {
                 Line lastLine = route.pop();
                 route.push(new Line(lastLine.startStation, line.endStation, lastLine.startTime, line.endTime, line.seatType, lastLine.price + line.price, line.id));
             }
@@ -49,10 +35,29 @@ public class Scheme {
         this.transferTimes = transferTimes;
     }
 
+    public Stack<Line> getRoute() {
+        return route;
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    public Date getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public int getTransferTimes() {
+        return transferTimes;
+    }
+
     boolean betterInAllAspects(Scheme scheme) {
-        if (cost < scheme.cost && arrivalTime.compareTo(scheme.arrivalTime) <= 0 && transferTimes <= scheme.transferTimes) return true;
-        if (cost <= scheme.cost && arrivalTime.compareTo(scheme.arrivalTime) < 0 && transferTimes <= scheme.transferTimes) return true;
-        if (cost <= scheme.cost && arrivalTime.compareTo(scheme.arrivalTime) <= 0 && transferTimes < scheme.transferTimes) return true;
+        if (cost < scheme.cost && arrivalTime.compareTo(scheme.arrivalTime) <= 0 && transferTimes <= scheme.transferTimes)
+            return true;
+        if (cost <= scheme.cost && arrivalTime.compareTo(scheme.arrivalTime) < 0 && transferTimes <= scheme.transferTimes)
+            return true;
+        if (cost <= scheme.cost && arrivalTime.compareTo(scheme.arrivalTime) <= 0 && transferTimes < scheme.transferTimes)
+            return true;
         return false;
     }
 

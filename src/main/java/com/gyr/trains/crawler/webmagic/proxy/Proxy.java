@@ -1,12 +1,12 @@
 package com.gyr.trains.crawler.webmagic.proxy;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-
-import org.apache.commons.lang3.StringUtils;
 
 public class Proxy {
 
@@ -19,21 +19,6 @@ public class Proxy {
     private String username;
 
     private String password;
-
-    public static Proxy create(final URI uri) {
-        Proxy proxy = new Proxy(uri.getHost(), uri.getPort(), uri.getScheme());
-        String userInfo = uri.getUserInfo();
-        if (userInfo != null) {
-            String[] up = userInfo.split(":");
-            if (up.length == 1) {
-                proxy.username = up[0].isEmpty() ? null : up[0];
-            } else {
-                proxy.username = up[0].isEmpty() ? null : up[0];
-                proxy.password = up[1].isEmpty() ? null : up[1];
-            }
-        }
-        return proxy;
-    }
 
     public Proxy(String host, int port) {
         this(host, port, null);
@@ -52,6 +37,21 @@ public class Proxy {
         this.password = password;
     }
 
+    public static Proxy create(final URI uri) {
+        Proxy proxy = new Proxy(uri.getHost(), uri.getPort(), uri.getScheme());
+        String userInfo = uri.getUserInfo();
+        if (userInfo != null) {
+            String[] up = userInfo.split(":");
+            if (up.length == 1) {
+                proxy.username = up[0].isEmpty() ? null : up[0];
+            } else {
+                proxy.username = up[0].isEmpty() ? null : up[0];
+                proxy.password = up[1].isEmpty() ? null : up[1];
+            }
+        }
+        return proxy;
+    }
+
     public String getScheme() {
         return scheme;
     }
@@ -60,7 +60,7 @@ public class Proxy {
         this.scheme = scheme;
     }
 
-	public String getHost() {
+    public String getHost() {
         return host;
     }
 

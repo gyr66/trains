@@ -3,7 +3,8 @@ package com.gyr.trains.algorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -56,8 +57,12 @@ public class Traveler {
         List<Scheme> temp = new ArrayList<>();
         boolean essential = true;
         for (Scheme historyScheme : schemeList) {
-            if (!scheme.betterInAllAspects(historyScheme)) temp.add(historyScheme); // 如果当前scheme比之前的某个到达记录各方面都好，则移除该到达记录
-            if (!scheme.atLeastBetterInOneAspect(historyScheme)) { essential = false; break; } // 如果当前scheme比之前的某个到达记录各方面都差，则剪枝
+            if (!scheme.betterInAllAspects(historyScheme))
+                temp.add(historyScheme); // 如果当前scheme比之前的某个到达记录各方面都好，则移除该到达记录
+            if (!scheme.atLeastBetterInOneAspect(historyScheme)) {
+                essential = false;
+                break;
+            } // 如果当前scheme比之前的某个到达记录各方面都差，则剪枝
         }
         if (!essential) return;
         temp.add(scheme);
@@ -65,7 +70,8 @@ public class Traveler {
 
         // 尝试从当前站乘车
         for (Line line : graph.map.get(currentStation.id)) {
-            if (!path.empty() && !path.peek().id.equals(line.id) && (line.startTime.getTime() - currentDate.getTime()) < (long) minMinutesForSameStationTransfer * 60 * 1000) continue;
+            if (!path.empty() && !path.peek().id.equals(line.id) && (line.startTime.getTime() - currentDate.getTime()) < (long) minMinutesForSameStationTransfer * 60 * 1000)
+                continue;
             if (line.startTime.compareTo(currentDate) < 0) continue; // 防止跨天
             // 更新换乘次数
             int newTransferTimes = transferTimes;

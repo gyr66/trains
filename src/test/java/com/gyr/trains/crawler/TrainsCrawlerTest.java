@@ -20,6 +20,6 @@ public class TrainsCrawlerTest {
         TrainsCrawler trainsCrawler = new TrainsCrawler();
         List<Train> trains = trainsCrawler.start();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-        trainsMapper.insertTrains("trains_"+ dateFormat.format(new Date()), trains);
+        trainsMapper.insertTrains("trains_" + dateFormat.format(new Date()), trains);
     }
 }

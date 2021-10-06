@@ -86,7 +86,7 @@ public interface Selectable {
     /**
      * replace with regex
      *
-     * @param regex regex
+     * @param regex       regex
      * @param replacement replacement
      * @return new Selectable after extract
      */
@@ -146,6 +146,7 @@ public interface Selectable {
 
     /**
      * get all nodes
+     *
      * @return result
      */
     public List<Selectable> nodes();

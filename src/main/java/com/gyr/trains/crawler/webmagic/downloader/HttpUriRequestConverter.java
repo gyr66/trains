@@ -1,6 +1,8 @@
 package com.gyr.trains.crawler.webmagic.downloader;
 
 import com.gyr.trains.crawler.webmagic.Request;
+import com.gyr.trains.crawler.webmagic.Site;
+import com.gyr.trains.crawler.webmagic.proxy.Proxy;
 import com.gyr.trains.crawler.webmagic.utils.HttpConstant;
 import com.gyr.trains.crawler.webmagic.utils.UrlUtils;
 import org.apache.http.HttpHost;
@@ -17,16 +19,13 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.cookie.BasicClientCookie;
-import com.gyr.trains.crawler.webmagic.Site;
-import com.gyr.trains.crawler.webmagic.proxy.Proxy;
 
 import java.util.Map;
 
 /**
  * @author code4crafter@gmail.com
- *         Date: 17/3/18
- *         Time: 11:28
- *
+ * Date: 17/3/18
+ * Time: 11:28
  * @since 0.7.0
  */
 public class HttpUriRequestConverter {
@@ -92,7 +91,7 @@ public class HttpUriRequestConverter {
             //default get
             return RequestBuilder.get();
         } else if (method.equalsIgnoreCase(HttpConstant.Method.POST)) {
-            return addFormParams(RequestBuilder.post(),request);
+            return addFormParams(RequestBuilder.post(), request);
         } else if (method.equalsIgnoreCase(HttpConstant.Method.HEAD)) {
             return RequestBuilder.head();
         } else if (method.equalsIgnoreCase(HttpConstant.Method.PUT)) {
