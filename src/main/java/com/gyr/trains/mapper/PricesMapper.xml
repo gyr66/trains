@@ -5,7 +5,7 @@
     <insert id="insertPrices" parameterType="string">
         INSERT INTO ${tableName} VALUES
         <foreach collection="priceList" item="price" separator=",">
-            (#{price.tran_no}, #{price.from_station_no}, #{price.to_station_no}, #{price.price})
+            (${price.tran_no}, ${price.from_station_no}, ${price.to_station_no}, ${price.price})
         </foreach>
     </insert>
 </mapper>

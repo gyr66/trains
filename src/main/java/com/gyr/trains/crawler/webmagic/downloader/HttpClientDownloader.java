@@ -33,14 +33,11 @@ import java.util.Map;
 public class HttpClientDownloader extends AbstractDownloader {
 
     private final Map<String, CloseableHttpClient> httpClients = new HashMap<String, CloseableHttpClient>();
-    private Logger logger = LoggerFactory.getLogger(getClass());
-    private HttpClientGenerator httpClientGenerator = new HttpClientGenerator();
-
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final HttpClientGenerator httpClientGenerator = new HttpClientGenerator();
+    private final boolean responseHeader = true;
     private HttpUriRequestConverter httpUriRequestConverter = new HttpUriRequestConverter();
-
     private ProxyProvider proxyProvider;
-
-    private boolean responseHeader = true;
 
     public void setHttpUriRequestConverter(HttpUriRequestConverter httpUriRequestConverter) {
         this.httpUriRequestConverter = httpUriRequestConverter;
@@ -68,6 +65,31 @@ public class HttpClientDownloader extends AbstractDownloader {
         return httpClient;
     }
 
+//    private Proxy getProxy() {
+//        String body = "";
+//        CloseableHttpClient client = HttpClients.createDefault();
+//        HttpGet httpGet = new HttpGet("http://localhost:5010/pop");
+//        try {
+//            CloseableHttpResponse response = client.execute(httpGet);
+//            HttpEntity entity = response.getEntity();
+//            if (entity != null) {
+//                body = EntityUtils.toString(entity, "utf-8");
+//            }
+//            EntityUtils.consume(entity);
+//            Thread.sleep(2000);
+//        } catch (Exception e) {
+//            logger.error(e.getMessage());
+//        }
+//        JSONObject jsonObject = JSON.parseObject(body);
+//        if (jsonObject == null) return null;
+//        String proxyString = jsonObject.getString("proxy");
+//        if (proxyString == null) return null;
+//        String host = proxyString.substring(0, proxyString.indexOf(":"));
+//        int port = Integer.parseInt(proxyString.substring(proxyString.indexOf(":") + 1));
+//        logger.info("更换了ip: " + host + ":" + port);
+//        return new Proxy(host, port);
+//    }
+
     @Override
     public Page download(Request request, Task task) {
         if (task == null || task.getSite() == null) {
@@ -76,6 +98,7 @@ public class HttpClientDownloader extends AbstractDownloader {
         CloseableHttpResponse httpResponse = null;
         CloseableHttpClient httpClient = getHttpClient(task.getSite());
         Proxy proxy = proxyProvider != null ? proxyProvider.getProxy(task) : null;
+//        Proxy proxy = getProxy();
         HttpClientRequestContext requestContext = httpUriRequestConverter.convert(request, task.getSite(), proxy);
         Page page = Page.fail();
         try {

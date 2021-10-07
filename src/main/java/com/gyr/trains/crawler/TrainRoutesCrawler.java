@@ -66,6 +66,7 @@ public class TrainRoutesCrawler {
             }
         } catch (Exception e) {
             logger.error("爬取到错误页面: " + content);
+            logger.error("错误页面的请求地址为: " + resultItem.getRequest().getUrl());
         }
         return routeList;
     }
@@ -93,7 +94,7 @@ public class TrainRoutesCrawler {
                 .addPipeline(new RoutePipLine())
                 .addUrl(urls)
                 .addPipeline(resultItemsCollectorPipeline)
-                .thread(16)
+                .thread(1000)
                 .run();
         List<ResultItems> resultItems = resultItemsCollectorPipeline.getCollected();
         logger.info("共爬取到" + resultItems.size() + "页");
@@ -112,7 +113,7 @@ class RoutePipLine implements Pipeline {
     static {
         try {
             SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-            printWriter = new PrintWriter("/data/routes_" + sf.format(new Date()) + ".txt");
+            printWriter = new PrintWriter("routes_" + sf.format(new Date()) + ".txt");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

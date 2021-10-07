@@ -395,6 +395,8 @@ public class Spider implements Runnable, Task {
         if (site.getAcceptStatCode().contains(page.getStatusCode()) && !page.getRawText().contains("html")) {
             if (JSON.parseObject(page.getRawText()).getString("status").equals("false")) {
                 doCycleRetry(request);
+            } else if (JSON.parseObject(page.getRawText()).getString("data") == null) {
+                doCycleRetry(request);
             } else {
                 pageProcessor.process(page);
                 extractAndAddRequests(page, spawnUrl);
@@ -406,6 +408,7 @@ public class Spider implements Runnable, Task {
             }
         } else {
             logger.info("page status code error, page {} , code: {}", request.getUrl(), page.getStatusCode());
+            sleep(1000);
             doCycleRetry(request);
         }
         sleep(site.getSleepTime());

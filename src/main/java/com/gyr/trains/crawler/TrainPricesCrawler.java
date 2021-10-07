@@ -70,6 +70,7 @@ public class TrainPricesCrawler {
             price = new Price(no, from_station_no, to_station_no, seatType + "/" + cost);
         } catch (Exception e) {
             logger.error("爬取到错误页面: " + content);
+            logger.error("错误页面的请求地址为: " + resultItem.getRequest().getUrl());
         }
         return price;
     }
@@ -102,7 +103,7 @@ public class TrainPricesCrawler {
                 .addPipeline(new PricePipLine())
                 .addPipeline(resultItemsCollectorPipeline)
                 .addUrl(urls)
-                .thread(16)
+                .thread(1000)
                 .run();
         List<ResultItems> resultItems = resultItemsCollectorPipeline.getCollected();
         logger.info("共爬取到" + resultItems.size() + "页");

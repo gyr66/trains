@@ -14,8 +14,9 @@ public class Plan {
     List<Item> lines = new ArrayList<>();
     String title;
     String type = "groupLine1";
+    Info info;
 
-    public Plan(String type, Scheme scheme) {
+    public Plan(String type, Scheme scheme, Info info) {
         title = type;
         if (scheme != null) {
             List<Item> itemList = new ArrayList<>();
@@ -26,6 +27,7 @@ public class Plan {
             }
             lines = itemList;
         }
+        this.info = info;
     }
 
 }

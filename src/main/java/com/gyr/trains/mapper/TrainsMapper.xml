@@ -5,8 +5,8 @@
     <insert id="insertTrains" parameterType="String">
         INSERT INTO ${tableName} VALUES
         <foreach collection="trainList" item="train" separator=",">
-            (#{train.from_station}, #{train.to_station}, #{train.station_train_code}, #{train.train_no}, #{train.date},
-            #{train.total_num})
+            (${train.from_station}, ${train.to_station}, ${train.station_train_code}, ${train.train_no}, ${train.date},
+            ${train.total_num})
         </foreach>
     </insert>
 

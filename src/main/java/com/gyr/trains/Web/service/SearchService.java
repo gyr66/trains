@@ -1,5 +1,6 @@
 package com.gyr.trains.Web.service;
 
+import com.gyr.trains.Web.bean.Info;
 import com.gyr.trains.Web.bean.Plan;
 import com.gyr.trains.Web.bean.Query;
 import com.gyr.trains.algorithm.*;
@@ -9,7 +10,6 @@ import com.gyr.trains.mapper.StationsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,7 +34,7 @@ public class SearchService {
     List<Station> stationList;
     List<Line> lineList = new ArrayList<>();
 
-    @PostConstruct
+    //    @PostConstruct
     public void initialize() throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
         stationList = stationsMapper.getAllStations();
@@ -49,6 +49,7 @@ public class SearchService {
                 if (startTime.compareTo(endTime) > 0) continue; // 滤掉跨天的段
                 String priceString = result.getPrice().substring(result.getPrice().indexOf("/") + 1);
                 if (priceString.equals("无")) continue;
+                if (startStation.getId() == 0 || endStation.getId() == 0) continue; // 去掉站表中没有的路线
                 String seatType = result.getPrice().substring(0, 1);
                 switch (seatType) {
                     case "O":
@@ -101,7 +102,13 @@ public class SearchService {
                 }
             }
         }
-        Plan plan = new Plan(type, minCostScheme);
+        Info info = new Info();
+        if (minCostScheme != null) {
+            info.setPrice(minCostScheme.getCost());
+            info.setArrivalTime(sf.format(minCostScheme.getArrivalTime()));
+            info.setTransferTimes(minCostScheme.getTransferTimes());
+        }
+        Plan plan = new Plan(type, minCostScheme, info);
         planList.add(plan);
 
         // 获取到达最早的Plan
@@ -116,8 +123,7 @@ public class SearchService {
                 }
             }
         }
-        plan = new Plan(type, earliestArrivalScheme);
-        planList.add(plan);
+        dealScheme(sf, planList, type, earliestArrivalScheme);
 
         // 获取换乘次数最少的Plan
         type = "换乘最少";
@@ -131,8 +137,20 @@ public class SearchService {
                 }
             }
         }
-        plan = new Plan(type, minTransferTimesScheme);
-        planList.add(plan);
+        dealScheme(sf, planList, type, minTransferTimesScheme);
         return planList;
+    }
+
+    private void dealScheme(SimpleDateFormat sf, List<Plan> planList, String type, Scheme minTransferTimesScheme) {
+        Info info;
+        Plan plan;
+        info = new Info();
+        if (minTransferTimesScheme != null) {
+            info.setPrice(minTransferTimesScheme.getCost());
+            info.setArrivalTime(sf.format(minTransferTimesScheme.getArrivalTime()));
+            info.setTransferTimes(minTransferTimesScheme.getTransferTimes());
+        }
+        plan = new Plan(type, minTransferTimesScheme, info);
+        planList.add(plan);
     }
 }

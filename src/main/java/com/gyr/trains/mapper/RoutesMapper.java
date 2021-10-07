@@ -9,5 +9,5 @@ import java.util.List;
 public interface RoutesMapper {
     void insertRoutes(String tableName, List<Route> routeList);
 
-    List<Route> getAllRoutes();
+    List<Route> getAllRoutes(String tableName);
 }

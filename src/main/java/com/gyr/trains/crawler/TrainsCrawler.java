@@ -48,6 +48,7 @@ public class TrainsCrawler {
             }
         } catch (Exception e) {
             logger.error("爬取到错误页面: " + content);
+            logger.error("错误页面的请求地址为: " + resultItem.getRequest().getUrl());
         }
         return trainList;
     }
@@ -68,7 +69,7 @@ public class TrainsCrawler {
                 .addUrl(urls)
                 .addPipeline(new TrainPipLine())
                 .addPipeline(resultItemsCollectorPipeline)
-                .thread(16)
+                .thread(1000)
                 .run();
         List<ResultItems> resultItems = resultItemsCollectorPipeline.getCollected();
         logger.info("共爬取到" + resultItems.size() + "页");
@@ -105,7 +106,7 @@ class TrainPipLine implements Pipeline {
 
         if (trainList == null) return;
         for (Train train : trainList) {
-            String res = train.getFrom_station() + " " + train.getTo_station() + " " + train.getStation_train_code() + " " + train.getTrain_no() + " " + train.getStation_train_code() + " " + train.getDate() + " " + train.getTotal_num();
+            String res = train.getFrom_station() + " " + train.getTo_station() + " " + train.getStation_train_code() + " " + train.getTrain_no() + " " + train.getDate() + " " + train.getTotal_num();
             printWriter.println(res);
         }
         printWriter.flush();

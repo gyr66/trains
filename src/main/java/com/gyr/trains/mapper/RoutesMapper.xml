@@ -5,15 +5,15 @@
     <insert id="insertRoutes" parameterType="String">
         INSERT INTO ${tableName} VALUES
         <foreach collection="routeList" item="route" separator=",">
-            (#{route.start_station_name}, #{route.end_station_name}, #{route.start_time},
-            #{route.arrive_time},#{route.station_train_code},
-            #{route.from_station_no}, #{route.to_station_no}, #{route.train_no}
+            (${route.start_station_name}, ${route.end_station_name}, ${route.start_time},
+            ${route.arrive_time},${route.station_train_code},
+            ${route.from_station_no}, ${route.to_station_no}, ${route.train_no}
             )
         </foreach>
     </insert>
 
-    <select id="getAllRoutes" resultType="com.gyr.trains.crawler.bean.Route">
+    <select id="getAllRoutes" resultType="com.gyr.trains.crawler.bean.Route" parameterType="String">
         SELECT *
-        FROM routes
+        FROM ${tableName}
     </select>
 </mapper>
