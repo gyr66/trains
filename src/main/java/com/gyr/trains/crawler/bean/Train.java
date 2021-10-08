@@ -19,4 +19,8 @@ public class Train {
         this.to_station = to_station;
         this.total_num = total_num;
     }
+
+    public Train() {
+
+    }
 }

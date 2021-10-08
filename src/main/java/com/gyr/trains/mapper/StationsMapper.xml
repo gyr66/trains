@@ -7,7 +7,7 @@
         FROM stations
     </select>
 
-    <select id="getStationByName" resultType="com.gyr.trains.algorithm.Station" parameterType="String">
+    <select id="getStationByName" resultType="com.gyr.trains.algorithm.Station">
         SELECT *
         FROM stations
         WHERE name = #{name}

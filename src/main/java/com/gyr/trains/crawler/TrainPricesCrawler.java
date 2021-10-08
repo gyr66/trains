@@ -107,6 +107,7 @@ public class TrainPricesCrawler {
                 .run();
         List<ResultItems> resultItems = resultItemsCollectorPipeline.getCollected();
         logger.info("共爬取到" + resultItems.size() + "页");
+
         for (ResultItems resultItem : resultItems) {
             Price price = dealResultItem(resultItem, logger);
             if (price != null) priceList.add(price);

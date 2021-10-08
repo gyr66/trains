@@ -22,6 +22,9 @@ public class TrainsMapperTest {
         train = new Train("2", "3", "4", "5", "6", 7);
         trainList.add(train);
         trainsMapper.insertTrains("trains_20211007", trainList);
+        List<String> trains_20211007 = trainsMapper.getAllTrain_nos("trains_20211007");
+        int size = trains_20211007.size();
+        System.out.println(size);
 
 
     }

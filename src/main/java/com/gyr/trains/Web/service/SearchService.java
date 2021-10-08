@@ -10,6 +10,7 @@ import com.gyr.trains.mapper.StationsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,7 +35,7 @@ public class SearchService {
     List<Station> stationList;
     List<Line> lineList = new ArrayList<>();
 
-    //    @PostConstruct
+    @PostConstruct
     public void initialize() throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
         stationList = stationsMapper.getAllStations();

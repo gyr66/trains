@@ -47,6 +47,7 @@ public class TrainsCrawler {
                 }
             }
         } catch (Exception e) {
+            logger.error(e.getMessage());
             logger.error("爬取到错误页面: " + content);
             logger.error("错误页面的请求地址为: " + resultItem.getRequest().getUrl());
         }
@@ -59,7 +60,7 @@ public class TrainsCrawler {
         String fd = sf.format(new Date());
         String baseUrl = "https://search.12306.cn/search/v1/train/search?date=" + fd + "&keyword=";
         List<String> urlList = new ArrayList<>();
-        for (int i = 1; i <= 10000; i++)
+        for (int i = 1; i <= 5; i++)
             urlList.add(baseUrl + i);
         String[] urls = new String[urlList.size()];
         urlList.toArray(urls);
@@ -73,6 +74,7 @@ public class TrainsCrawler {
                 .run();
         List<ResultItems> resultItems = resultItemsCollectorPipeline.getCollected();
         logger.info("共爬取到" + resultItems.size() + "页");
+        set.clear(); // 在生成要返回的train集合时要将之前写入文件时留下的set记录清空
         for (ResultItems resultItem : resultItems) {
             List<Train> trainList = dealResultItem(resultItem, logger);
             if (trainList != null) trains.addAll(trainList);

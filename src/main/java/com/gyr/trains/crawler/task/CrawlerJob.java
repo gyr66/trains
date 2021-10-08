@@ -94,7 +94,7 @@ public class CrawlerJob {
         logger.info("定时更换ip任务关闭");
     }
 
-    @Scheduled(cron = "0 25 22 * * ?")
+    @Scheduled(cron = "0 42 16 * * ?")
     public void run() throws ParseException {
         long startTime = System.currentTimeMillis();
 
@@ -116,10 +116,15 @@ public class CrawlerJob {
                 "  `total_num` int(0) NULL DEFAULT NULL\n" +
                 ") ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;");
         List<Train> trainList = trainsCrawler.start();
-        trainsMapper.insertTrains(trainTableName, trainList);
         long endTime = System.currentTimeMillis();
         long minutes = (endTime - startTime) / 1000 / 60;
         mailService.send("火车车次爬取完成, 总共爬取" + trainList.size() + "个火车车次, 用时" + minutes + "分钟");
+        try {
+            trainsMapper.insertTrains(trainTableName, trainList);
+        } catch (Exception e) {
+            logger.error("trains插入数据库失败: " + e.getMessage());
+            mailService.send("trains插入数据库失败: " + e.getMessage());
+        }
 
         // 爬取当天的所有路线
         logger.info("正在爬取所有路线...");
@@ -136,13 +141,19 @@ public class CrawlerJob {
                 "  `to_station_no` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,\n" +
                 "  `train_no` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL\n" +
                 ") ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;\n");
-        List<String> tran_nos = trainsMapper.getAllTrain_nos(trainTableName);
+        List<String> tran_nos = new ArrayList<>();
+        for (Train train : trainList) tran_nos.add(train.getTrain_no());
         trainRoutesCrawler.setTrain_nos(tran_nos);
         List<Route> routeList = trainRoutesCrawler.start();
-        routesMapper.insertRoutes(routesTableName, routeList);
         endTime = System.currentTimeMillis();
         minutes = (endTime - startTime) / 1000 / 60;
         mailService.send("路线爬取完成, 总共爬取" + routeList.size() + "条路线, 用时" + minutes + "分钟");
+        try {
+            routesMapper.insertRoutes(routesTableName, routeList);
+        } catch (Exception e) {
+            logger.error("routes插入数据库失败: " + e.getMessage());
+            mailService.send("routes插入数据库失败: " + e.getMessage());
+        }
 
         // 爬取当天的价格
         logger.info("正在爬取所有价格...");
@@ -157,10 +168,15 @@ public class CrawlerJob {
                 ") ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;");
         trainPricesCrawler.setRoutes(routeList);
         List<Price> priceList = trainPricesCrawler.start();
-        pricesMapper.insertPrices(pricesTableName, priceList);
         endTime = System.currentTimeMillis();
         minutes = (endTime - startTime) / 1000 / 60;
         mailService.send("价格爬取完成, 总共爬取" + routeList.size() + "条价格, 用时" + minutes + "分钟");
+        try {
+            pricesMapper.insertPrices(pricesTableName, priceList);
+        } catch (Exception e) {
+            logger.error("prices插入数据库失败: " + e.getMessage());
+            mailService.send("prices插入数据库失败: " + e.getMessage());
+        }
 
         // 关闭从线程池里更换ip的任务
         stopFresh();
@@ -198,7 +214,7 @@ public class CrawlerJob {
         @SneakyThrows
         @Override
         public void run() {
-            Jedis jedis = new Jedis("47.108.221.7", 6379);
+            Jedis jedis = new Jedis("127.0.0.1", 6379);
             Set<String> proxies = jedis.hkeys("use_proxy");
             List<Proxy> proxyList = new ArrayList<>();
             for (String proxyString : proxies) {
@@ -208,7 +224,7 @@ public class CrawlerJob {
                 proxyList.add(proxy);
             }
             httpClientDownloader.setProxyProvider(new SimpleProxyProvider(proxyList));
-            logger.info("更换了一批ip");
+            logger.info("更换了一批代理" + proxyList);
         }
     }
 
