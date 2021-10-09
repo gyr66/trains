@@ -48,25 +48,27 @@ public class Traveler {
         // 剪枝
         if (currentDate.compareTo(latestArrivalTime) > 0) return;
 
-        // 将当前路径构造为一个scheme
-        Scheme scheme = new Scheme(path);
+        if (!path.empty()) {
+            // 将当前路径构造为一个scheme
+            Scheme scheme = new Scheme(path);
 
-        // 与历史到达记录进行比较，移除某些历史到达记录和决定是否继续在当前情况的基础上继续尝试
-        List<Scheme> schemeList = notes.get(currentStation);
-        if (schemeList == null) schemeList = new ArrayList<>();
-        List<Scheme> temp = new ArrayList<>();
-        boolean essential = true;
-        for (Scheme historyScheme : schemeList) {
-            if (!scheme.betterInAllAspects(historyScheme))
-                temp.add(historyScheme); // 如果当前scheme比之前的某个到达记录各方面都好，则移除该到达记录
-            if (!scheme.atLeastBetterInOneAspect(historyScheme)) {
-                essential = false;
-                break;
-            } // 如果当前scheme比之前的某个到达记录各方面都差，则剪枝
+            // 与历史到达记录进行比较，移除某些历史到达记录和决定是否继续在当前情况的基础上继续尝试
+            List<Scheme> schemeList = notes.get(currentStation);
+            if (schemeList == null) schemeList = new ArrayList<>();
+            List<Scheme> temp = new ArrayList<>();
+            boolean essential = true;
+            for (Scheme historyScheme : schemeList) {
+                if (!scheme.betterInAllAspects(historyScheme))
+                    temp.add(historyScheme); // 如果当前scheme比之前的某个到达记录各方面都好，则移除该到达记录
+                if (!scheme.atLeastBetterInOneAspect(historyScheme)) {
+                    essential = false;
+                    break;
+                } // 如果当前scheme比之前的某个到达记录各方面都差，则剪枝
+            }
+            if (!essential) return;
+            temp.add(scheme);
+            notes.put(currentStation, temp);
         }
-        if (!essential) return;
-        temp.add(scheme);
-        notes.put(currentStation, temp);
 
         // 尝试从当前站乘车
         for (Line line : graph.map.get(currentStation.id)) {

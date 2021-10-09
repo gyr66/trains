@@ -140,12 +140,41 @@ public class SearchService {
         }
         dealScheme(sf, planList, type, minTransferTimesScheme);
 
+        // 总耗时最短的方案
+        type = "总耗时最短";
+        long totalTime = Long.MAX_VALUE;
+        Scheme minTotalTime = null;
+        if (schemes != null) {
+            for (Scheme scheme : schemes) {
+                if (scheme.getTotalTime() < totalTime) {
+                    minTotalTime = scheme;
+                    totalTime = scheme.getTotalTime();
+                }
+            }
+        }
+        dealScheme(sf, planList, type, minTotalTime);
+
+        // 与期望时间最接近的方案
+        type = "与期望到达时间最接近";
+        long diffTime = Long.MAX_VALUE;
+        Scheme closestScheme = null;
+        if (schemes != null) {
+            for (Scheme scheme : schemes) {
+                if (scheme.getDifferenceFromExpectedArrivalTime() < diffTime) {
+                    closestScheme = scheme;
+                    diffTime = scheme.getDifferenceFromExpectedArrivalTime();
+                }
+            }
+        }
+        dealScheme(sf, planList, type, minTotalTime);
+
         // 其他方案
         if (schemes != null) {
             int index = 0;
             for (Scheme scheme : schemes) {
                 if (scheme == minCostScheme || scheme == earliestArrivalScheme || scheme == minTransferTimesScheme) continue;
                 index++;
+                type = "其他";
                 type = type + index;
                 dealScheme(sf, planList, type, scheme);
             }

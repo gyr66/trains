@@ -86,7 +86,7 @@ public class CrawlerJob {
 
     public void startFresh() {
         logger.info("定时更换ip任务开启");
-        future = threadPoolTaskScheduler.schedule(new Fresh(), new CronTrigger("0/1 * * * * *"));
+        future = threadPoolTaskScheduler.schedule(new Fresh(), new CronTrigger("0/15 * * * * *"));
     }
 
     void stopFresh() {
@@ -96,7 +96,7 @@ public class CrawlerJob {
         logger.info("定时更换ip任务关闭");
     }
 
-    @Scheduled(cron = "0 0 16 * * ?")
+    @Scheduled(cron = "0 50 18 * * ?")
     public void run() throws ParseException {
         long startTime = System.currentTimeMillis();
 
@@ -243,16 +243,19 @@ public class CrawlerJob {
     }
 
     class Fresh implements Runnable {
+        List<Proxy> proxyList = new ArrayList<>();
+        Jedis jedis = new Jedis("127.0.0.1", 6379);
+        Proxy proxy;
+
         @SneakyThrows
         @Override
         public void run() {
-            Jedis jedis = new Jedis("127.0.0.1", 6379);
+            proxyList.clear();
             Set<String> proxies = jedis.hkeys("use_proxy");
-            List<Proxy> proxyList = new ArrayList<>();
             for (String proxyString : proxies) {
                 String host = proxyString.substring(0, proxyString.indexOf(":"));
                 int port = Integer.parseInt(proxyString.substring(proxyString.indexOf(":") + 1));
-                Proxy proxy = new Proxy(host, port);
+                proxy = new Proxy(host, port);
                 proxyList.add(proxy);
             }
             httpClientDownloader.setProxyProvider(new SimpleProxyProvider(proxyList));
