@@ -26,9 +26,14 @@ public class TrainsCrawler {
     static Set<String> set = new HashSet<>();
     List<Train> trains = new ArrayList<>();
     Logger logger = LoggerFactory.getLogger(getClass());
+    Date date = new Date();
 
     @Autowired
     HttpClientDownloader httpClientDownloader;
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     public static List<Train> dealResultItem(ResultItems resultItem, Logger logger) {
         List<Train> trainList = new ArrayList<>();
@@ -57,10 +62,10 @@ public class TrainsCrawler {
     public List<Train> start() {
         set.clear(); // 每次启动前先清空set
         SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-        String fd = sf.format(new Date());
+        String fd = sf.format(date);
         String baseUrl = "https://search.12306.cn/search/v1/train/search?date=" + fd + "&keyword=";
         List<String> urlList = new ArrayList<>();
-        for (int i = 1; i <= 5; i++)
+        for (int i = 1; i <= 10000; i++)
             urlList.add(baseUrl + i);
         String[] urls = new String[urlList.size()];
         urlList.toArray(urls);
@@ -68,7 +73,7 @@ public class TrainsCrawler {
         Spider.create(new Processor())
                 .setDownloader(httpClientDownloader)
                 .addUrl(urls)
-                .addPipeline(new TrainPipLine())
+                .addPipeline(new TrainPipLine(date))
                 .addPipeline(resultItemsCollectorPipeline)
                 .thread(1000)
                 .run();
@@ -84,19 +89,20 @@ public class TrainsCrawler {
 }
 
 class TrainPipLine implements Pipeline {
-    static PrintWriter printWriter;
-    static LongAdder longAdder = new LongAdder();
+    PrintWriter printWriter;
+    LongAdder longAdder = new LongAdder();
+    Logger logger = LoggerFactory.getLogger(getClass());
+    Date date;
 
-    static {
+    public TrainPipLine(Date date) {
+        this.date = date;
         try {
             SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-            printWriter = new PrintWriter("trains_" + sf.format(new Date()) + ".txt");
+            printWriter = new PrintWriter("trains_" + sf.format(date) + ".txt");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
-
-    Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public void process(ResultItems resultItems, Task task) {

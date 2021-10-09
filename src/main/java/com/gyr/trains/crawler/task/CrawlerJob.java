@@ -72,19 +72,21 @@ public class CrawlerJob {
 
     ScheduledFuture<?> future;
 
+    Date date = new Date();
+
     @Autowired
     private ThreadPoolTaskScheduler threadPoolTaskScheduler;
 
     @Bean
     public ThreadPoolTaskScheduler threadPoolTaskScheduler() {
         ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
-        threadPoolTaskScheduler.setPoolSize(2);
+        threadPoolTaskScheduler.setPoolSize(3);
         return threadPoolTaskScheduler;
     }
 
-    void startFresh() {
+    public void startFresh() {
         logger.info("定时更换ip任务开启");
-        future = threadPoolTaskScheduler.schedule(new Fresh(), new CronTrigger("0/10 * * * * *"));
+        future = threadPoolTaskScheduler.schedule(new Fresh(), new CronTrigger("0/1 * * * * *"));
     }
 
     void stopFresh() {
@@ -94,7 +96,7 @@ public class CrawlerJob {
         logger.info("定时更换ip任务关闭");
     }
 
-    @Scheduled(cron = "0 42 16 * * ?")
+    @Scheduled(cron = "0 0 16 * * ?")
     public void run() throws ParseException {
         long startTime = System.currentTimeMillis();
 
@@ -105,7 +107,7 @@ public class CrawlerJob {
 
         // 爬取当天所有火车车次
         logger.info("正在爬取所有火车车次...");
-        String trainTableName = "trains_" + sf.format(new Date());
+        String trainTableName = "trains_" + sf.format(date);
         jdbcTemplate.execute("DROP TABLE IF EXISTS `" + trainTableName + "`");
         jdbcTemplate.execute("CREATE TABLE `" + trainTableName + "`  (\n" +
                 "  `from_station` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,\n" +
@@ -115,7 +117,17 @@ public class CrawlerJob {
                 "  `date` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,\n" +
                 "  `total_num` int(0) NULL DEFAULT NULL\n" +
                 ") ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;");
-        List<Train> trainList = trainsCrawler.start();
+        List<Train> trainList = null;
+        try {
+            trainsCrawler.setDate(date);
+            trainList = trainsCrawler.start();
+        } catch (Exception e) {
+            logger.error("爬取火车车次失败: " + e.getMessage());
+            mailService.send("爬取火车车次失败: " + e.getMessage());
+            return;
+        } finally {
+            stopFresh();
+        }
         long endTime = System.currentTimeMillis();
         long minutes = (endTime - startTime) / 1000 / 60;
         mailService.send("火车车次爬取完成, 总共爬取" + trainList.size() + "个火车车次, 用时" + minutes + "分钟");
@@ -129,7 +141,7 @@ public class CrawlerJob {
         // 爬取当天的所有路线
         logger.info("正在爬取所有路线...");
         // 建routes表
-        String routesTableName = "routes_" + sf.format(new Date());
+        String routesTableName = "routes_" + sf.format(date);
         jdbcTemplate.execute("DROP TABLE IF EXISTS `" + routesTableName + "`");
         jdbcTemplate.execute("CREATE TABLE `" + routesTableName + "`  (\n" +
                 "  `start_station_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,\n" +
@@ -144,7 +156,17 @@ public class CrawlerJob {
         List<String> tran_nos = new ArrayList<>();
         for (Train train : trainList) tran_nos.add(train.getTrain_no());
         trainRoutesCrawler.setTrain_nos(tran_nos);
-        List<Route> routeList = trainRoutesCrawler.start();
+        List<Route> routeList = null;
+        try {
+            trainRoutesCrawler.setDate(date);
+            routeList = trainRoutesCrawler.start();
+        } catch (Exception e) {
+            logger.error("爬取routes失败: " + e.getMessage());
+            mailService.send("爬取routes失败: " + e.getMessage());
+            return;
+        } finally {
+            stopFresh();
+        }
         endTime = System.currentTimeMillis();
         minutes = (endTime - startTime) / 1000 / 60;
         mailService.send("路线爬取完成, 总共爬取" + routeList.size() + "条路线, 用时" + minutes + "分钟");
@@ -158,7 +180,7 @@ public class CrawlerJob {
         // 爬取当天的价格
         logger.info("正在爬取所有价格...");
         // 建prices表
-        String pricesTableName = "prices_" + sf.format(new Date());
+        String pricesTableName = "prices_" + sf.format(date);
         jdbcTemplate.execute("DROP TABLE IF EXISTS `" + pricesTableName + "`");
         jdbcTemplate.execute("CREATE TABLE `" + pricesTableName + "`  (\n" +
                 "  `train_no` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,\n" +
@@ -167,10 +189,20 @@ public class CrawlerJob {
                 "  `price` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL\n" +
                 ") ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;");
         trainPricesCrawler.setRoutes(routeList);
-        List<Price> priceList = trainPricesCrawler.start();
+        List<Price> priceList = null;
+        try {
+            trainPricesCrawler.setDate(date);
+            priceList = trainPricesCrawler.start();
+        } catch (Exception e) {
+            logger.error("爬取prices失败: " + e.getMessage());
+            mailService.send("爬取prices失败" + e.getMessage());
+            return;
+        } finally {
+            stopFresh();
+        }
         endTime = System.currentTimeMillis();
         minutes = (endTime - startTime) / 1000 / 60;
-        mailService.send("价格爬取完成, 总共爬取" + routeList.size() + "条价格, 用时" + minutes + "分钟");
+        mailService.send("价格爬取完成, 总共爬取" + priceList.size() + "条价格, 用时" + minutes + "分钟");
         try {
             pricesMapper.insertPrices(pricesTableName, priceList);
         } catch (Exception e) {
@@ -183,7 +215,7 @@ public class CrawlerJob {
 
         // 联表
         logger.info("正在联表...");
-        String table_name = "results_" + sf.format(new Date());
+        String table_name = "results_" + sf.format(date);
         jdbcTemplate.execute("DROP TABLE IF EXISTS `" + table_name + "`");
         jdbcTemplate.execute("CREATE TABLE " + table_name + "(\n" +
                 "\tSELECT \n" +
@@ -224,7 +256,7 @@ public class CrawlerJob {
                 proxyList.add(proxy);
             }
             httpClientDownloader.setProxyProvider(new SimpleProxyProvider(proxyList));
-            logger.info("更换了一批代理" + proxyList);
+            logger.info("更换了一批代理");
         }
     }
 

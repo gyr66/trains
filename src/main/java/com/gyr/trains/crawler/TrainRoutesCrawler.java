@@ -29,9 +29,14 @@ public class TrainRoutesCrawler {
     List<String> train_nos;
     List<Route> trainRoutes = new ArrayList<>();
     Logger logger = LoggerFactory.getLogger(getClass());
+    Date date = new Date();
 
     @Autowired
     HttpClientDownloader httpClientDownloader;
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     public TrainRoutesCrawler(List<String> train_nos) {
         this.train_nos = train_nos;
@@ -46,7 +51,7 @@ public class TrainRoutesCrawler {
         String content = resultItem.get("content");
         String url = resultItem.get("url");
         String train_no = ParseUrlUtil.parse(url).get("train_no");
-        Route route = null;
+        Route route;
         try {
             JSONObject jsonObject = JSON.parseObject(content).getJSONObject("data");
             JSONArray data = jsonObject.getJSONArray("data");
@@ -73,7 +78,7 @@ public class TrainRoutesCrawler {
 
     String buildUrl(String train_no, Date date) {
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-        String fd = sf.format(new Date());
+        String fd = sf.format(date);
         return "https://kyfw.12306.cn/otn/czxx/queryByTrainNo?train_no=" + train_no + "&from_station_telecode=WAR&to_station_telecode=WAR&depart_date=" + fd;
     }
 
@@ -84,14 +89,14 @@ public class TrainRoutesCrawler {
     public List<Route> start() {
         List<String> urlList = new ArrayList<>();
         for (String train_no : train_nos) {
-            urlList.add(buildUrl(train_no, new Date()));
+            urlList.add(buildUrl(train_no, date));
         }
         String[] urls = new String[urlList.size()];
         urlList.toArray(urls);
         ResultItemsCollectorPipeline resultItemsCollectorPipeline = new ResultItemsCollectorPipeline();
         Spider.create(new Processor())
                 .setDownloader(httpClientDownloader)
-                .addPipeline(new RoutePipLine())
+                .addPipeline(new RoutePipLine(date))
                 .addUrl(urls)
                 .addPipeline(resultItemsCollectorPipeline)
                 .thread(1000)
@@ -107,19 +112,20 @@ public class TrainRoutesCrawler {
 }
 
 class RoutePipLine implements Pipeline {
-    static PrintWriter printWriter;
-    static LongAdder longAdder = new LongAdder();
+    PrintWriter printWriter;
+    LongAdder longAdder = new LongAdder();
+    Logger logger = LoggerFactory.getLogger(getClass());
+    Date date;
 
-    static {
+    public RoutePipLine(Date date) {
+        this.date = date;
         try {
             SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-            printWriter = new PrintWriter("routes_" + sf.format(new Date()) + ".txt");
+            printWriter = new PrintWriter("routes_" + sf.format(date) + ".txt");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
-
-    Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public void process(ResultItems resultItems, Task task) {

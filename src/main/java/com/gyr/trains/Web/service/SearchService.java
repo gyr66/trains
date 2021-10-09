@@ -107,7 +107,7 @@ public class SearchService {
         if (minCostScheme != null) {
             info.setPrice(minCostScheme.getCost());
             info.setArrivalTime(sf.format(minCostScheme.getArrivalTime()));
-            info.setTransferTimes(minCostScheme.getTransferTimes());
+            info.setTransferTimes(minCostScheme.getTransferTimes() - 1);
         }
         Plan plan = new Plan(type, minCostScheme, info);
         planList.add(plan);
@@ -139,6 +139,17 @@ public class SearchService {
             }
         }
         dealScheme(sf, planList, type, minTransferTimesScheme);
+
+        // 其他方案
+        if (schemes != null) {
+            int index = 0;
+            for (Scheme scheme : schemes) {
+                if (scheme == minCostScheme || scheme == earliestArrivalScheme || scheme == minTransferTimesScheme) continue;
+                index++;
+                type = type + index;
+                dealScheme(sf, planList, type, scheme);
+            }
+        }
         return planList;
     }
 
@@ -149,7 +160,7 @@ public class SearchService {
         if (minTransferTimesScheme != null) {
             info.setPrice(minTransferTimesScheme.getCost());
             info.setArrivalTime(sf.format(minTransferTimesScheme.getArrivalTime()));
-            info.setTransferTimes(minTransferTimesScheme.getTransferTimes());
+            info.setTransferTimes(minTransferTimesScheme.getTransferTimes() - 1);
         }
         plan = new Plan(type, minTransferTimesScheme, info);
         planList.add(plan);

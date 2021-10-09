@@ -407,8 +407,7 @@ public class Spider implements Runnable, Task {
                 }
             }
         } else {
-            logger.info("page status code error, page {} , code: {}", request.getUrl(), page.getStatusCode());
-            sleep(1000);
+//            logger.info("page status code error, page {} , code: {}", request.getUrl(), page.getStatusCode());
             doCycleRetry(request);
         }
         sleep(site.getSleepTime());
@@ -449,7 +448,6 @@ public class Spider implements Runnable, Task {
     protected void extractAndAddRequests(Page page, boolean spawnUrl) {
         if (spawnUrl && CollectionUtils.isNotEmpty(page.getTargetRequests())) {
             for (Request request : page.getTargetRequests()) {
-                logger.info("添加了失败的url: " + request.getUrl());
                 addRequest(request);
             }
         }

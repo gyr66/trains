@@ -34,6 +34,7 @@ public class TrainPricesCrawler {
     Logger logger = LoggerFactory.getLogger(getClass());
     List<Route> routes;
     List<String> seatCode = new ArrayList<>();
+    Date date = new Date();
 
     @Autowired
     HttpClientDownloader httpClientDownloader;
@@ -46,6 +47,10 @@ public class TrainPricesCrawler {
     public TrainPricesCrawler(List<Route> routes) {
         super();
         setRoutes(routes);
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public static Price dealResultItem(ResultItems resultItem, Logger logger) {
@@ -93,14 +98,14 @@ public class TrainPricesCrawler {
             String from_station_no = route.getFrom_station_no();
             String to_station_no = route.getTo_station_no();
             for (String code : seatCode)
-                urlList.add(buildUrl(train_no, new Date(), from_station_no, to_station_no, code));
+                urlList.add(buildUrl(train_no, date, from_station_no, to_station_no, code));
         }
         String[] urls = new String[urlList.size()];
         urlList.toArray(urls);
         ResultItemsCollectorPipeline resultItemsCollectorPipeline = new ResultItemsCollectorPipeline();
         Spider.create(new Processor())
                 .setDownloader(httpClientDownloader)
-                .addPipeline(new PricePipLine())
+                .addPipeline(new PricePipLine(date))
                 .addPipeline(resultItemsCollectorPipeline)
                 .addUrl(urls)
                 .thread(1000)
@@ -117,13 +122,15 @@ public class TrainPricesCrawler {
 }
 
 class PricePipLine implements Pipeline {
-    static PrintWriter printWriter;
-    static LongAdder longAdder = new LongAdder();
+    SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+    PrintWriter printWriter;
+    LongAdder longAdder = new LongAdder();
+    Date date;
 
-    static {
+    public PricePipLine(Date date) {
+        this.date = date;
         try {
-            SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-            printWriter = new PrintWriter("prices_" + sf.format(new Date()) + ".txt");
+            printWriter = new PrintWriter("prices_" + sf.format(date) + ".txt");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
